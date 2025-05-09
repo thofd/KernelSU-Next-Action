@@ -87,6 +87,10 @@ jobs:
     - name: Setup Configuration for Kernel
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
+        # Generate KernelSU Next V2 Signature Key
+
+        mkdir -p certs
+        openssl req -new -x509 -newkey rsa:2048 -sha256 -days 36500 -nodes  -subj "/CN=KernelSU/"  -keyout certs/signing_key.pem -out certs/signing_key.x509
         
             echo "CONFIG_MODULES=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
             echo "CONFIG_KSU=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
