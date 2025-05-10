@@ -86,18 +86,14 @@ jobs:
         cp -rv susfs4ksu/kernel_patches/include/linux/* include/linux/
         # 拷贝 SUSFS 的实现文件到内核的 kernel/ 目录
         cp -rv susfs4ksu/kernel_patches/* kernel/
-        # 在 include/linux/sched.h 中为 SUSFS 添加 susfs_task_state 字段
-        patch -p1 << 'EOF'
-        *** Begin Patch
-        *** Update File: include/linux/sched.h
-        @@ struct task_struct {
-        /* existing fields ... */
-        +   /*
-        +    * SUSFS 用于记录用户态进程权限状态
-        +    */
-        +   unsigned long   susfs_task_state;
-        *** End Patch
-        EOF
+        cp ./kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch $KERNEL_ROOT/KernelSU/
+        cp ./kernel_patches/50_add_susfs_in_kernel-<kernel_version>.patch $KERNEL_ROOT/
+        cp ./kernel_patches/fs/susfs.c $KERNEL_ROOT/fs/
+        cp ./kernel_patches/include/linux/susfs.h $KERNEL_ROOT/include/linux/
+        cd $KERNEL_ROOT/KernelSU
+        patch -p1 < 10_enable_susfs_for_ksu.patch
+        cd $KERNEL_ROOT
+        patch -p1 < 50_add_susfs_in_kernel.patch
 
     - name: Setup Configuration for Kernel
       run: |
