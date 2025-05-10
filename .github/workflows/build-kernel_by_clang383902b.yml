@@ -86,7 +86,9 @@ jobs:
     - name: Setup Configuration for Kernel
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
-        
+            
+            # Patch KernelSU for 4.19 compatibility
+            sed -i 's/^MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver);/\/\/ &/' drivers/kernelsu/ksu.c
             echo "CONFIG_MODULES=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
             echo "CONFIG_KSU=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
             sed -i '/#define NOHZ_KICK_MASK/d' include/linux/sched/topology.h
