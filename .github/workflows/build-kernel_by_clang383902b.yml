@@ -81,7 +81,16 @@ jobs:
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
         curl -LSs "https://raw.githubusercontent.com/ShirkNeko/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-dev
         #原样本 curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next/kernel/setup.sh" | bash -s next
-      
+
+    - name: Integrate SUSFS
+      run: |
+        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
+        # 克隆 SUSFS 专用分支（适配 4.19 内核）
+        git clone https://gitlab.com/simonpunk/susfs4ksu.git -b stable --depth=1
+        # 拷贝 SUSFS 的头文件到内核的 include 路径
+        cp -rv susfs4ksu/include/linux/* include/linux/
+        # 拷贝 SUSFS 的实现文件到内核的 kernel/ 目录
+        cp -rv susfs4ksu/kernel/* kernel/
 
     - name: Setup Configuration for Kernel
       run: |
